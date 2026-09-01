@@ -1,0 +1,31 @@
+src/
+├── app/
+│   ├── App.jsx
+│   ├── router.jsx
+│   ├── config/
+│   │   └── sidebar.js
+│   └── providers/
+│       └── AuthProvider.jsx
+├── components/
+│   └── layout/
+│       ├── DashboardLayout.jsx
+│       ├── Sidebar.jsx
+│       └── Topbar.jsx
+├── features/
+│   ├── auth/
+│   │   └── pages/
+│   │       └── LoginPage.jsx
+│   ├── dashboard/
+│   │   └── pages/
+│   │       └── DashboardHome.jsx
+│   ├── customers/
+│   │   └── pages/
+│   │       ├── CustomersListPage.jsx
+│   │       ├── CustomerFormPage.jsx
+│   │       └── CustomerDetailsPage.jsx
+│   └── shared/
+│       └── pages/
+│           └── ModulePlaceholderPage.jsx
+├── styles/
+│   └── globals.css
+└── main.jsx

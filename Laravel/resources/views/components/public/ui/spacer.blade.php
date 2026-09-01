@@ -1,0 +1,1 @@
+<div {{ $attributes->twMerge("w-full h-px my-3 bg-black/50 dark:bg-white/50", $class ?? "") }}></div>
