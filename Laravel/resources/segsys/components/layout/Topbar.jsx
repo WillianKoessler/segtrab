@@ -21,7 +21,7 @@ export default function Topbar({ sidebarOpen = false, onMenuClick }) {
 
     const handleLogout = async () => {
         await logout();
-        window.location = "/login";
+        window.location = "/app/login";
     }
 
     return (

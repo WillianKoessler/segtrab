@@ -63,13 +63,13 @@ if (!function_exists('ExceptionJsonSerializer')) {
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: LARAVEL_DIR . '/routes/web.php',
+        api: LARAVEL_DIR . '/routes/api.php',
         commands: LARAVEL_DIR . '/routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->prepend(\App\Http\Middleware\WebApplicationFirewall::class);
         $middleware->append(\App\Http\Middleware\DetectDevRequest::class);
-        $middleware->statefulApi();
         $middleware->alias([
             'api-json' => \App\Http\Middleware\EnsureJsonResponse::class,
         ]);
