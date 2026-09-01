@@ -25,3 +25,6 @@
 /Laravel/.nova
 /Laravel/.vscode
 /Laravel/.zed
+
+*.bak
+patcher.py
