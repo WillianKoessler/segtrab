@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Application\Integrations\IntegrationManager;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(
+            IntegrationManager::class,
+            function() { return new IntegrationManager(); }
+        );
     }
 
     /**

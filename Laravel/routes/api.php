@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccessControlController;
 use App\Http\Controllers\Auth\TokenAuthenticationController;
+use App\Http\Controllers\IntegrationTestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use Illuminate\Http\Request;
@@ -36,5 +37,7 @@ Route::middleware('api-json')->group(function () {
         Route::get('/permissions/{permission}', [AccessControlController::class, 'showPermission']);
         Route::put('/permissions/{permission}', [AccessControlController::class, 'updatePermission']);
         Route::delete('/permissions/{permission}', [AccessControlController::class, 'destroyPermission']);
+
+        Route::get('/integrations/test', [ IntegrationTestController::class, 'show' ]);
     });
 });
