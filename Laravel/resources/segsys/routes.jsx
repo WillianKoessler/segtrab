@@ -9,6 +9,8 @@ import ClientPage from "./features/clients/pages/ClientPage";
 import { ProfilePage } from "./features/dashboard/pages/Profile";
 import UserPage from "./features/users/pages/UserPage";
 import AccessControlPage from "./features/access-control/pages/AccessControlPage";
+import AEPPage from "./features/dashboard/pages/AEP";
+import { TesterPage } from "./features/dashboard/pages/Tester";
 
 
 const routes = [
@@ -81,7 +83,7 @@ const routes = [
     },
     {
         path: "aep",
-        Component: ModulePlaceholderPage,
+        Component: AEPPage,
         title: "AEP",
         extra: {
             title: "Avaliação Ergonômica Preliminar",
@@ -116,6 +118,14 @@ const routes = [
         title: "Grupos e Permissões",
         extra: {
             icon: ShieldCheck,
+        },
+    },
+    {
+        path: "tester",
+        Component: TesterPage,
+        title: "Tester",
+        extra: {
+            icon: Settings,
         },
     },
 ];
