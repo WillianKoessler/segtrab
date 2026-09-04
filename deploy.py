@@ -33,12 +33,14 @@ def run(cmds: list[str]) -> None:
 def build_frontend():
     print("Building frontend...")
     tempname = f"{PUBLIC_BUILD_DIR}.temp"
-    os.rename(PUBLIC_BUILD_DIR, tempname)
+    try: os.rename(PUBLIC_BUILD_DIR, tempname)
+    except: print("No build found.")
     try:
         run([f"cd {LARAVEL_DIR}", "npm run build --emptyOutDir"])
         shutil.rmtree(tempname)
     except:
-        os.rename(tempname, PUBLIC_BUILD_DIR)
+        try: os.rename(tempname, PUBLIC_BUILD_DIR)
+        except: pass
 
 def ensure_clean_dir(path: Path) -> None:
     if path.exists():
