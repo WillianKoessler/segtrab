@@ -14,6 +14,13 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
+    public function current(Request $request): UserResource
+    {
+        $current = $request->user();
+        abort_if(!$current, 403);
+        return new UserResource($current);
+    }
+
     public function index(Request $request): AnonymousResourceCollection
     {
         abort_unless(

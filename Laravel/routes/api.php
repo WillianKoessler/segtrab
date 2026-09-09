@@ -14,9 +14,7 @@ Route::middleware('api-json')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [TokenAuthenticationController::class, 'destroy']);
 
-        Route::get('/user', function (Request $request) {
-            return $request->user();
-        });
+        Route::get('/user', [UserController::class, 'current']);
 
         Route::get('/users', [UserController::class, 'index']);
         Route::get('/users/{user}', [UserController::class, 'show']);
