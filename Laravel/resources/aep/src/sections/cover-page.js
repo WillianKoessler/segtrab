@@ -20,7 +20,7 @@ export default function SectionCoverPage() {
                     { tag: 'p', className: 'text-xl text-gray-600', children: [razao_social, { tag: 'br' }, cnpj] },
                 ]
             },
-            { tag: 'img', className: "h-screen", src: "/assets/img/12fd4e5a-7f7c-4471-b4cd-89b8da9fc475.png" },
+            { tag: 'img', className: "h-screen", src: "/assets/img/capa-aep.jpg" },
         ]
     }
 }

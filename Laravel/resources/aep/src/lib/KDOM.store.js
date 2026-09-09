@@ -240,6 +240,168 @@
             };
     }
 
+    // persistState(key, options?) → enhancer
+    //
+    // Persists the store state to localStorage.
+    //
+    // Example:
+    //   const store = KDOM.createStore(
+    //     reducer,
+    //     KDOM.persistState("my-app")
+    //   );
+    //
+    // Optional options:
+    //   {
+    //     storage: localStorage-like object,
+    //     serialize: (state) => string,
+    //     deserialize: (value) => state,
+    //     select: (state) => state,
+    //     debounce: number
+    //   }
+
+    function persistState(key, options) {
+        options = options || {};
+
+        if (typeof key !== "string" || key.length === 0) {
+            throw new KDOMStoreError("persistState: key must be a non-empty string.");
+        }
+
+        const serialize =
+            typeof options.serialize === "function"
+                ? options.serialize
+                : JSON.stringify;
+
+        const deserialize =
+            typeof options.deserialize === "function"
+                ? options.deserialize
+                : JSON.parse;
+
+        const select =
+            typeof options.select === "function"
+                ? options.select
+                : (state) => state;
+
+        const debounce =
+            typeof options.debounce === "number" && options.debounce >= 0
+                ? options.debounce
+                : 0;
+
+        function getStorage() {
+            if (options.storage) return options.storage;
+
+            // Important for SSR / Node / tests:
+            if (typeof window === "undefined") return null;
+
+            try {
+                return window.localStorage;
+            } catch (err) {
+                console.warn("[KDOM Store] localStorage unavailable:", err);
+                return null;
+            }
+        }
+
+        return (createStoreFn) =>
+            (reducer, preloadedState) => {
+                const storage = getStorage();
+
+                let hydratedState = preloadedState;
+
+                // Only hydrate from storage when the caller did not explicitly
+                // provide a preloadedState.
+                if (typeof hydratedState === "undefined" && storage) {
+                    try {
+                        const persisted = storage.getItem(key);
+
+                        if (persisted !== null) {
+                            hydratedState = deserialize(persisted);
+                        }
+                    } catch (err) {
+                        console.warn(
+                            `[KDOM Store] Failed to restore persisted state for "${key}":`,
+                            err
+                        );
+                    }
+                }
+
+                const store = createStoreFn(reducer, hydratedState);
+
+                if (!storage) {
+                    return store;
+                }
+
+                let saveTimer = null;
+                let destroyed = false;
+
+                function save() {
+                    if (destroyed) return;
+
+                    try {
+                        const state = select(store.getState());
+                        const serialized = serialize(state);
+                        storage.setItem(key, serialized);
+                    } catch (err) {
+                        console.warn(
+                            `[KDOM Store] Failed to persist state for "${key}":`,
+                            err
+                        );
+                    }
+                }
+
+                function scheduleSave() {
+                    if (debounce === 0) {
+                        save();
+                        return;
+                    }
+
+                    if (saveTimer !== null) {
+                        clearTimeout(saveTimer);
+                    }
+
+                    saveTimer = setTimeout(() => {
+                        saveTimer = null;
+                        save();
+                    }, debounce);
+                }
+
+                // Persist the initial state as well. This means a completely new
+                // store will populate localStorage immediately.
+                save();
+
+                const unsubscribe = store.subscribe(scheduleSave);
+
+                // Preserve the normal store API and add a few persistence helpers.
+                return {
+                    ...store,
+
+                    persist: save,
+
+                    clearPersisted() {
+                        try {
+                            storage.removeItem(key);
+                        } catch (err) {
+                            console.warn(
+                                `[KDOM Store] Failed to clear persisted state for "${key}":`,
+                                err
+                            );
+                        }
+                    },
+
+                    destroyPersistence() {
+                        if (destroyed) return;
+
+                        destroyed = true;
+
+                        unsubscribe();
+
+                        if (saveTimer !== null) {
+                            clearTimeout(saveTimer);
+                            saveTimer = null;
+                        }
+                    },
+                };
+            };
+    }
+
     // Lets you dispatch functions: dispatch((dispatch, getState) => { ... })
     const thunk = ({ dispatch, getState }) => (next) => (action) => {
         if (typeof action === "function")
@@ -321,6 +483,7 @@
                 KDOM.compose = compose;
                 KDOM.thunk = thunk;
                 KDOM.shallowEqual = shallowEqual;
+                KDOM.persistState = persistState;
                 KDOM.registerStore = registerStore;
                 KDOM.getStore = getStore;
 
@@ -413,6 +576,7 @@
                         "compose",
                         "thunk",
                         "shallowEqual",
+                        "persistState",
                         "registerStore",
                         "getStore",
                         "useStore",

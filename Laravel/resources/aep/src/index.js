@@ -4,7 +4,7 @@ import SECTIONS_MAP from "./sections/map.js";
 import aepReducer from "./store.js";
 import SectionCoverPage from "./sections/cover-page.js";
 
-window.aepStore = KDOM.createStore(aepReducer);
+window.aepStore = KDOM.createStore(aepReducer, KDOM.persistState("aepState"));
 KDOM.registerStore(window.aepStore);
 
 export default function App() {
