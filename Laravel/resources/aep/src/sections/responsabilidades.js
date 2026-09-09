@@ -1,6 +1,8 @@
 import Section from "../layout/Section.js";
 
 function formatDate(date) {
+    if(typeof date === "string")
+        date = new Date(date);
     return new Intl.DateTimeFormat("pt-BR", {
         day: "numeric",
         month: "long",
