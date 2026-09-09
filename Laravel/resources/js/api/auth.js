@@ -1,7 +1,7 @@
 import { api, clearStoredAuth, getStoredToken } from "#lib/api";
 
 export async function getCurrentUser() {
-    return (await api.get("/user")).data;
+    return (await api.get("/user")).data.data;
 }
 
 export async function login({ email, password, captchaToken }) {
