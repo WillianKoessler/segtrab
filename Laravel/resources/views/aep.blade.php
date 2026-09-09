@@ -8,6 +8,7 @@
     <meta name="description"
         content="Sistema de Saúde e Segurança no Trabalho - Ferramenta de Geração para Análise Ergonômica Preliminar">
     <meta name="author" content="Segtrab Saúde">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     @vite(['resources/aep/script.js'])
 </head>
 
