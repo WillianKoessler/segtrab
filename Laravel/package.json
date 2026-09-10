@@ -42,6 +42,9 @@
     "imports": {
         "#components/*": "./resources/js/components/*.jsx",
         "#lib/*": "./resources/js/lib/*.js",
-        "#hooks/*": "./resources/js/hooks/*.js"
+        "#hooks/*": "./resources/js/hooks/*.js",
+        "#api/*": "./resources/js/api/*.js",
+        "#app/*": "./resources/segsys/*.jsx",
+        "#contexts/*": "./resources/js/contexts/*.jsx"
     }
 }

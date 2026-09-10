@@ -17,7 +17,10 @@
     "utils": "#lib/utils",
     "ui": "#components/ui",
     "lib": "#lib",
-    "hooks": "#hooks"
+    "hooks": "#hooks",
+    "api": "#api",
+    "app": "#app",
+    "contexts": "#contexts"
   },
   "menuColor": "default-translucent",
   "menuAccent": "subtle",
