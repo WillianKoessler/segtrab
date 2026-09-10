@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MoreHorizontal, Plus, Trash2, UserRound } from "lucide-react";
 import { deleteUser, getUsers } from "../../../../js/api/users";
 import { getAvailableRoles } from "../../../../js/api/role";
@@ -54,29 +54,10 @@ export default function UserPage() {
     const [loading, setLoading] = useState(true);
     const [availableRoles, setAvailableRoles] = useState([]);
 
-    const dialogRef = useRef(null);
-
     const openCreate = () => setDialog({ type: "create" });
     const openEdit = user => setDialog({ type: "edit", user });
     const openDelete = user => setDialog({ type: "delete", user });
     const closeDialog = () => setDialog(null);
-
-    const handleDialogOutside = event => {
-        const originalEvent = event.detail.originalEvent;
-
-        if (!(originalEvent instanceof PointerEvent))
-            return;
-
-        const rect = dialogRef.current?.getBoundingClientRect();
-
-        if (!rect)
-            return;
-
-        const { clientX, clientY } = originalEvent;
-
-        if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom)
-            event.preventDefault();
-    }
 
     const loadUsers = async () => {
         try {
@@ -221,7 +202,7 @@ export default function UserPage() {
             )}
             {(dialog?.type === "edit") && (
                 <Dialog open={dialog !== null} onOpenChange={open => { if (!open) closeDialog(); }}>
-                    <DialogContent ref={dialogRef} className="sm:max-w-sm" onPointerDownOutside={handleDialogOutside}>
+                    <DialogContent className="sm:max-w-sm">
                         <DialogHeader>
                             <DialogTitle>Editar usuário</DialogTitle>
                             <DialogDescription>Atualize os dados da conta de acesso.</DialogDescription>
@@ -232,7 +213,7 @@ export default function UserPage() {
             )}
             {(dialog?.type === "create") && (
                 <Dialog open={dialog !== null} onOpenChange={open => { if (!open) closeDialog(); }}>
-                    <DialogContent ref={dialogRef} className="sm:max-w-sm" onPointerDownOutside={handleDialogOutside}>
+                    <DialogContent className="sm:max-w-sm">
                         <DialogHeader>
                             <DialogTitle>Novo usuário</DialogTitle>
                             <DialogDescription>Crie uma nova conta de acesso ao sistema.</DialogDescription>
