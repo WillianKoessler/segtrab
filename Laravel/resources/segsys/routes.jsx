@@ -1,16 +1,13 @@
-import ClientListPage from "./features/clients/pages/ClientListPage";
-import ClientFormPage from "./features/clients/pages/ClientFormPage";
-import ClientDetailsPage from "./features/clients/pages/ClientDetailsPage";
 import ModulePlaceholderPage from "./features/shared/pages/ModulePlaceholderPage";
 import DashboardHome from "./features/dashboard/pages/Home/index";
 import SettingsPage from './features/dashboard/pages/Settings';
 import { LayoutDashboard, Users, Package, ShoppingCart, BarChart3, Settings, File, ShieldCheck } from "lucide-react";
-import ClientPage from "./features/clients/pages/ClientPage";
 import { ProfilePage } from "./features/dashboard/pages/Profile";
 import UserPage from "./features/users/pages/UserPage";
 import AccessControlPage from "./features/access-control/pages/AccessControlPage";
 import AEPPage from "./features/dashboard/pages/AEP";
 import { TesterPage } from "./features/dashboard/pages/Tester";
+import ClientsPage from "./features/dashboard/pages/Clientes";
 
 
 const routes = [
@@ -24,35 +21,11 @@ const routes = [
     },
     {
         path: "clients",
-        Component: ClientPage,
+        Component: ClientsPage,
         title: "Clientes",
         extra: {
             icon: Users,
-        },
-        routes: [
-            {
-                path: "new",
-                Component: ClientFormPage,
-                title: "Clientes",
-                extra: {
-                    mode: "create",
-                },
-            },
-            {
-                path: ":id",
-                title: "Visualizar Cliente",
-                extra: {},
-                Component: ClientDetailsPage,
-            },
-            {
-                path: ":id/edit",
-                Component: ClientFormPage,
-                title: "Editar Cliente",
-                extra: {
-                    mode: "edit",
-                },
-            },
-        ],
+        }
     },
     {
         path: "produtos",
