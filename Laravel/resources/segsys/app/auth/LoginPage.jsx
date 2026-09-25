@@ -16,6 +16,7 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [captchaToken, setCaptchaToken] = useState("");
     const [captchaReady, setCaptchaReady] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -30,21 +31,14 @@ export default function LoginPage() {
     }, [currentUser, navigate]);
 
     useEffect(() => {
-        if (!siteKey) {
+        if (!siteKey)
             return undefined;
-        }
 
         let disposed = false;
 
         const renderWidget = () => {
-            if (
-                disposed ||
-                !captchaRef.current ||
-                !window.turnstile ||
-                widgetIdRef.current !== null
-            ) {
+            if (disposed || !captchaRef.current || !window.turnstile || widgetIdRef.current !== null)
                 return;
-            }
 
             widgetIdRef.current = window.turnstile.render(captchaRef.current, {
                 sitekey: siteKey,
@@ -65,15 +59,11 @@ export default function LoginPage() {
             setCaptchaReady(false);
         };
 
-        const existing = document.querySelector(
-            'script[data-segsys-turnstile="true"]',
-        );
+        const existing = document.querySelector('script[data-segsys-turnstile="true"]');
 
         if (window.turnstile) {
             renderWidget();
-            return () => {
-                disposed = true;
-            };
+            return () => { disposed = true; };
         }
 
         if (existing) {
@@ -91,9 +81,8 @@ export default function LoginPage() {
         return () => {
             disposed = true;
 
-            if (existing) {
+            if (existing)
                 existing.removeEventListener("load", renderWidget);
-            }
 
             if (widgetIdRef.current !== null && window.turnstile) {
                 window.turnstile.remove(widgetIdRef.current);
@@ -108,15 +97,8 @@ export default function LoginPage() {
         setError("");
 
         try {
-            await login({
-                email,
-                password,
-                captchaToken,
-            });
-
-            const destination =
-                location.state?.from?.pathname ?? "/";
-
+            await login({ email, password, captchaToken });
+            const destination = location.state?.from?.pathname ?? "/";
             navigate(destination, { replace: true });
         } catch (reason) {
             setError(reason?.message ?? "Não foi possível entrar.");
@@ -202,16 +184,38 @@ export default function LoginPage() {
                                 >
                                     Senha
                                 </label>
-                                <input
-                                    id="password"
-                                    type="password"
-                                    autoComplete="current-password"
-                                    value={password}
-                                    onChange={event => setPassword(event.target.value)}
-                                    required
-                                    className="w-full rounded-xl border border-black/10 bg-black/5 px-4 py-3.5 outline-none transition focus:border-cyan-600 focus:ring-2 focus:ring-cyan-600/30 dark:border-white/10 dark:bg-white/5 dark:focus:border-cyan-400 dark:focus:ring-cyan-400/30"
-                                    placeholder="••••••••"
-                                />
+                                <div className="relative">
+                                    <input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        autoComplete="current-password"
+                                        value={password}
+                                        onChange={event => setPassword(event.target.value)}
+                                        required
+                                        className="w-full rounded-xl border border-black/10 bg-black/5 px-4 py-3.5 outline-none transition focus:border-cyan-600 focus:ring-2 focus:ring-cyan-600/30 dark:border-white/10 dark:bg-white/5 dark:focus:border-cyan-400 dark:focus:ring-cyan-400/30"
+                                        placeholder="••••••••"
+                                    />
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(value => !value)}
+                                        aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                                        aria-pressed={showPassword}
+                                        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-slate-500 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600 dark:text-slate-400 dark:hover:text-slate-200 dark:focus:ring-cyan-400"
+                                    >
+                                        {showPassword
+                                            ? (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden="true">
+                                                <path d="M3 3l18 18" />
+                                                <path d="M10.58 10.58a2 2 0 0 0 2.83 2.83" />
+                                                <path d="M9.88 4.24A9.77 9.77 0 0 1 12 4c5 0 8.5 4 9.5 8a11.78 11.78 0 0 1-2.16 3.68" />
+                                                <path d="M6.61 6.61C4.62 7.95 3.35 10.02 2.5 12c1 4 4.5 8 9.5 8a9.72 9.72 0 0 0 4.22-.94" /> </svg>)
+                                            : (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden="true">
+                                                <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z" />
+                                                <circle cx="12" cy="12" r="3" />
+                                            </svg>)
+                                        }
+                                    </button>
+                                </div>
                             </div>
 
                             {siteKey && (
