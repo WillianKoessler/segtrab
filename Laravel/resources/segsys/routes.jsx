@@ -1,13 +1,13 @@
-import ModulePlaceholderPage from "./features/shared/pages/ModulePlaceholderPage";
-import DashboardHome from "./features/dashboard/pages/Home/index";
-import SettingsPage from './features/dashboard/pages/Settings';
+import ModulePlaceholderPage from "./app/shared/ModulePlaceholderPage";
+import DashboardHome from "./app/dashboard/Home/index";
+import SettingsPage from './app/dashboard/Settings';
 import { LayoutDashboard, Users, Package, ShoppingCart, BarChart3, Settings, File, ShieldCheck } from "lucide-react";
-import { ProfilePage } from "./features/dashboard/pages/Profile";
-import UserPage from "./features/users/pages/UserPage";
-import AccessControlPage from "./features/access-control/pages/AccessControlPage";
-import AEPPage from "./features/dashboard/pages/AEP";
-import { TesterPage } from "./features/dashboard/pages/Tester";
-import ClientsPage from "./features/dashboard/pages/Clientes";
+import { ProfilePage } from "./app/dashboard/Profile";
+import UserPage from "./app/users/UserPage";
+import AccessControlPage from "./app/access-control/AccessControlPage";
+import AEPPage from "./app/dashboard/AEP";
+import { TesterPage } from "./app/dashboard/Tester";
+import ClientsPage from "./app/dashboard/Clientes";
 
 
 const routes = [
