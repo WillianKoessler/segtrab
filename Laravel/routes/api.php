@@ -4,8 +4,8 @@ use App\Http\Controllers\AccessControlController;
 use App\Http\Controllers\Auth\TokenAuthenticationController;
 use App\Http\Controllers\IntegrationTestController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\UserRoleController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('api-json')->group(function () {
@@ -15,6 +15,12 @@ Route::middleware('api-json')->group(function () {
         Route::post('/logout', [TokenAuthenticationController::class, 'destroy']);
 
         Route::get('/user', [UserController::class, 'current']);
+
+        Route::get('/clients', [ClientController::class, 'index']);
+        Route::get('/clients/{client}', [ClientController::class, 'show']);
+        Route::post('/clients', [ClientController::class, 'store']);
+        Route::put('/clients/{client}', [ClientController::class, 'update']);
+        Route::delete('/clients/{client}', [ClientController::class, 'destroy']);
 
         Route::get('/users', [UserController::class, 'index']);
         Route::get('/users/{user}', [UserController::class, 'show']);
