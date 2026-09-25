@@ -48,7 +48,7 @@ class ClientController extends Controller
     {
         abort_if(!request()->user()->can('clients.create'), 403);
         $saveFn = function () use ($request) {
-            $this->saveClient(new Client(), $request->validated());
+            return $this->saveClient(new Client(), $request->validated());
         };
         $client = DB::transaction($saveFn);
         return (new ClientResource($client))->response()->setStatusCode(201);
@@ -58,7 +58,7 @@ class ClientController extends Controller
     {
         abort_if(!request()->user()->can('clients.update'), 403);
         $updateFn = function () use ($request, $client) {
-            $this->saveClient($client, $request->validated());
+            return $this->saveClient($client, $request->validated());
         };
         $client = DB::transaction($updateFn);
         return new ClientResource($client);
@@ -89,16 +89,5 @@ class ClientController extends Controller
         $client->save();
 
         return $client;
-    }
-
-    private function saveOneToOne(Client $client, string $relation, string $model, array $attributes)
-    {
-        if ($attributes === [])
-            return;
-
-        $client->{$relation}()->updateOrCreate(
-            ['client_id' => $client->id],
-            $attributes
-        );
     }
 }
