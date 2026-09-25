@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             PermissionSeeder::class,
+            ClientPermissionSeeder::class,
+            SuperAdminPermissionsSeeder::class,
         ]);
 
         $user = User::where('email', 'test@example.com')->first();

@@ -14,7 +14,10 @@ class SuperAdminPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = Permission::all(['name']);
+        $reducer = function ($item) { return $item->name; };
+        $permissions = Permission::all(['name'])->all();
+        $permissions = array_map($reducer, $permissions);
+
         $superAdmin = Role::findOrCreate('Super Administrador', 'web');
         $superAdmin->syncPermissions($permissions);
     }
