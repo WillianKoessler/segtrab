@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { useAuth } from "../../../app/providers/AuthProvider";
+import { useAuth } from "../providers/AuthProvider";
 
 function getCaptchaSiteKey() {
     return document.querySelector('meta[name="captcha-site-key"]')?.content ?? "";

@@ -11,7 +11,7 @@ import {
     getRoles,
     updatePermission,
     updateRole,
-} from "../../../../js/api/accessControl";
+} from "#api/accessControl";
 import { Badge } from "#components/ui/badge";
 import { Button } from "#components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "#components/ui/card";

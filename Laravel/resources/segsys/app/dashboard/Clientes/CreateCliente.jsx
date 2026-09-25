@@ -1,87 +1,68 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "#components/ui/button";
-import {
-    Field,
-    FieldGroup,
-    FieldLabel,
-    FieldError,
-} from "#components/ui/field";
+import { Field, FieldGroup, FieldLabel, FieldError, } from "#components/ui/field";
 import { Input } from "#components/ui/input";
 import { Textarea } from "#components/ui/textarea";
 import { Switch } from "#components/ui/switch";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "#components/ui/tabs";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "#components/ui/select";
-
-import {
-    createClient,
-    getClient,
-    updateClient,
-} from "#api/clients";
+import { Tabs, TabsContent, TabsList, TabsTrigger, } from "#components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "#components/ui/select";
+import { getClient } from "#api/clients";
+import { DocumentInput } from "#components/ui/DocumentInput";
+import { toast } from "sonner";
 
 /**
  * --------
  * Cadastro
  * --------
  *
- * document_type = tipo de documento/cadastro
+ * doctype = tipo de documento/cadastro
  * person_type   = natureza do cliente
  *
  * CNO pode pertencer a PF ou PJ.
  * CEI é mantido apenas para compatibilidade com cadastros antigos.
  */
-const DOCUMENT_TYPES = {
+const DOCTYPES = {
     cpf: {
         label: "CPF",
         personType: "person",
         nameLabel: "Nome completo",
-        showTradeName: false,
+        showSocialName: false,
     },
 
     cnpj: {
         label: "CNPJ",
         personType: "company",
         nameLabel: "Razão social",
-        showTradeName: true,
+        showSocialName: true,
     },
 
     caepf: {
         label: "CAEPF",
         personType: "person",
         nameLabel: "Nome completo",
-        showTradeName: false,
+        showSocialName: false,
     },
 
     cno: {
         label: "CNO",
         personType: null,
         nameLabel: "Nome da obra",
-        showTradeName: false,
+        showSocialName: false,
     },
 
     cei: {
         label: "CEI",
         personType: null,
         nameLabel: "Nome",
-        showTradeName: false,
+        showSocialName: false,
         legacy: true,
     },
 };
 
 const emptyForm = {
     person_type: "",
-    document_type: "",
+    doctype: "",
 
     name: "",
     trade_name: "",
@@ -116,13 +97,13 @@ const emptyForm = {
     },
 };
 
-const DOCUMENT_TYPES_BY_PERSON = {
+const DOCTYPES_BY_PERSON = {
     person: ["cpf", "caepf", "cno", "cei"],
     company: ["cnpj", "cno", "cei"],
 };
 
 function getDocumentConfig(type) {
-    return DOCUMENT_TYPES[type] ?? null;
+    return DOCTYPES[type] ?? null;
 }
 
 function getDefaultPersonType(documentType) {
@@ -131,7 +112,7 @@ function getDefaultPersonType(documentType) {
 
 function mergeForm(data) {
     const documentType =
-        data?.document_type ??
+        data?.doctype ??
         data?.type ??
         "";
 
@@ -144,7 +125,7 @@ function mergeForm(data) {
         ...data,
 
         person_type: personType,
-        document_type: documentType,
+        doctype: documentType,
 
         financial: {
             ...emptyForm.financial,
@@ -168,7 +149,11 @@ function mergeForm(data) {
     };
 }
 
-export default function ClienteForm({ client, onConfirm }) {
+export default function ClienteForm({ client = null, item = null, onSubmit, onConfirm }) {
+    if (!onSubmit)
+        throw new Error("Este formulário precisa receber a funcão onSubmit.");
+
+    client = client ?? item;
     const isEdit = !!client;
 
     const [form, setForm] = useState(emptyForm);
@@ -180,8 +165,8 @@ export default function ClienteForm({ client, onConfirm }) {
      * Configuração do documento atual.
      */
     const documentConfig = useMemo(
-        () => getDocumentConfig(form.document_type),
-        [form.document_type]
+        () => getDocumentConfig(form.doctype),
+        [form.doctype]
     );
 
     /**
@@ -192,7 +177,7 @@ export default function ClienteForm({ client, onConfirm }) {
             return [];
         }
 
-        return DOCUMENT_TYPES_BY_PERSON[form.person_type] ?? [];
+        return DOCTYPES_BY_PERSON[form.person_type] ?? [];
     }, [form.person_type]);
 
     /**
@@ -227,7 +212,7 @@ export default function ClienteForm({ client, onConfirm }) {
     const handlePersonTypeChange = (personType) => {
         setForm((current) => {
             const currentDocument = getDocumentConfig(
-                current.document_type
+                current.doctype
             );
 
             const isCompatible =
@@ -241,8 +226,8 @@ export default function ClienteForm({ client, onConfirm }) {
                 ...current,
                 person_type: personType,
 
-                document_type: isCompatible
-                    ? current.document_type
+                doctype: isCompatible
+                    ? current.doctype
                     : "",
 
                 document: isCompatible
@@ -270,14 +255,14 @@ export default function ClienteForm({ client, onConfirm }) {
         setForm((current) => ({
             ...current,
 
-            document_type: documentType,
+            doctype: documentType,
 
             person_type:
                 config?.personType ??
                 current.person_type,
 
             trade_name:
-                config?.showTradeName
+                config?.showSocialName
                     ? current.trade_name
                     : "",
         }));
@@ -325,11 +310,19 @@ export default function ClienteForm({ client, onConfirm }) {
             setSubmitting(true);
             setError(null);
 
+            // const {
+            //     trade_name: tradeName,
+            //     ...form
+            // } = formPayload;
+
             const payload = {
                 ...form,
+                // ...formPayload,
+
+                // social_name: tradeName,
 
                 // Compatibilidade caso seu backend ainda use "type".
-                type: form.document_type,
+                type: form.doctype,
 
                 financial: {
                     ...form.financial,
@@ -343,14 +336,12 @@ export default function ClienteForm({ client, onConfirm }) {
                 },
             };
 
-            if (isEdit) {
-                await updateClient(client?.id, payload);
-            } else {
-                await createClient(payload);
-            }
+            // if (isEdit) await updateClient(client?.id, payload);
+            // else  await createClient(payload);
 
-            if (onConfirm)
-                onConfirm();
+            await onSubmit(payload);
+
+            onConfirm?.();
         } catch (error) {
             console.error(error);
 
@@ -380,9 +371,10 @@ export default function ClienteForm({ client, onConfirm }) {
             try {
                 setLoading(true);
                 const response = await getClient(client?.id);
-                setForm(mergeForm(response.data));
+                setForm(mergeForm(response));
             } catch (error) {
                 console.error(error);
+                toast.error(error.message || "Não foi possível carregar as informações do cliente.");
                 setError({
                     message: error.message || "Não foi possível carregar o cliente.",
                     fields: error.data?.data ?? {},
@@ -403,10 +395,11 @@ export default function ClienteForm({ client, onConfirm }) {
             <Tabs defaultValue="data" className="w-full" >
                 <TabsList className="grid w-full grid-cols-5">
                     <TabsTrigger value="data">Dados</TabsTrigger>
-                    <TabsTrigger value="financial" disabled={!form.document_type} >Financeiro</TabsTrigger>
-                    <TabsTrigger value="sst" disabled={!form.document_type} >SST</TabsTrigger>
-                    <TabsTrigger value="clinical" disabled={!form.document_type} >Clínica</TabsTrigger>
-                    <TabsTrigger value="engineering" disabled={!form.document_type} >Engenharia</TabsTrigger>
+                    <TabsTrigger value="financial" disabled={!form.doctype} >Financeiro</TabsTrigger>
+                    <TabsTrigger value="sst" disabled={!form.doctype} >SST</TabsTrigger>
+                    <TabsTrigger value="clinical" disabled={!form.doctype} >Clínica</TabsTrigger>
+                    <TabsTrigger value="engineering" disabled={!form.doctype} >Engenharia</TabsTrigger>
+                    <TabsTrigger value="debug">Debug</TabsTrigger>
                 </TabsList>
 
                 {/* DADOS */}
@@ -434,9 +427,9 @@ export default function ClienteForm({ client, onConfirm }) {
                         </Field>
 
                         {/* Documento */}
-                        <Field data-invalid={!!getError("document_type")} >
+                        <Field data-invalid={!!getError("doctype")} >
                             <FieldLabel>Documento / cadastro</FieldLabel>
-                            <Select value={form.document_type} onValueChange={handleDocumentTypeChange} disabled={!form.person_type} >
+                            <Select value={form.doctype} onValueChange={handleDocumentTypeChange} disabled={!form.person_type} >
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder={form.person_type ? "Selecione o documento" : "Selecione primeiro o tipo de pessoa"} />
                                 </SelectTrigger>
@@ -452,7 +445,7 @@ export default function ClienteForm({ client, onConfirm }) {
                                     })}
                                 </SelectContent>
                             </Select>
-                            <FieldError errors={getError("document_type")} />
+                            <FieldError errors={getError("doctype")} />
                         </Field>
                     </FieldGroup>
 
@@ -467,7 +460,7 @@ export default function ClienteForm({ client, onConfirm }) {
                             </Field>
 
                             {/* Nome fantasia */}
-                            {documentConfig.showTradeName && (
+                            {documentConfig.showSocialName && (
                                 <Field data-invalid={!!getError("trade_name")} >
                                     <FieldLabel htmlFor="trade_name">Nome fantasia</FieldLabel>
                                     <Input id="trade_name" value={form.trade_name} onChange={event => setField("trade_name", event.target.value)} aria-invalid={!!getError("trade_name")} />
@@ -478,7 +471,7 @@ export default function ClienteForm({ client, onConfirm }) {
                             {/* Documento */}
                             <Field data-invalid={!!getError("document")} >
                                 <FieldLabel htmlFor="document">{documentConfig.label}</FieldLabel>
-                                <Input id="document" value={form.document} onChange={event => setField("document", event.target.value)} aria-invalid={!!getError("document")} />
+                                <DocumentInput id="document" type={form.doctype} value={form.document} onChange={value => setField("document", value)} aria-invalid={!!getError("document")} />
                                 <FieldError errors={getError("document")} />
                             </Field>
 
@@ -585,12 +578,18 @@ export default function ClienteForm({ client, onConfirm }) {
                         <FieldLabel>Observações</FieldLabel>
                         <Textarea value={form.engineering.notes} onChange={event => setModuleField("engineering", "notes", event.target.value)} aria-invalid={!!getModuleError("engineering", "notes")} />
                         <FieldError errors={getModuleError("engineering", "notes")} />
-                    </Field> </TabsContent> </Tabs>
+                    </Field>
+                </TabsContent>
+
+                <TabsContent value="debug" className="mt-6">
+                    <pre>{JSON.stringify(form, null, 4)}</pre>
+                </TabsContent>
+            </Tabs>
 
             {/* ACTIONS */}
             <div className={`flex ${error ? "items-start justify-between gap-4" : "justify-end"}`} >
                 {error && <div className="max-w-xl rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">{error.message}</div>}
-                <Button type="submit" disabled={submitting || !form.person_type || !form.document_type} >
+                <Button type="submit" disabled={submitting || !form.person_type || !form.doctype} >
                     {submitting
                         ? "Salvando..."
                         : isEdit

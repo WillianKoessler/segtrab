@@ -11,9 +11,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getPageTitle } from "../../utils";
-import { useAuth } from "../../app/providers/AuthProvider";
 import { NavLink } from "react-router";
+import { useAuth } from "#app/app/providers/AuthProvider";
+import { getPageTitle } from "#app/utils";
 
 export default function Topbar({ sidebarOpen = false, onMenuClick }) {
     const location = useLocation();

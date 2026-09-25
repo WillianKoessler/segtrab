@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes, useLocation } from "react-router";
-import { DashboardLayout } from "../components/layout/DashboardLayout";
 import routes from "../routes";
-import LoginPage from "../features/auth/pages/LoginPage";
+import { DashboardLayout } from "#app/layout/DashboardLayout";
+import LoginPage from "./auth/LoginPage";
 import { useAuth } from "./providers/AuthProvider";
 
 function renderRoutes(routeList) {

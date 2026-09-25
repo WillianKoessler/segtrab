@@ -2,9 +2,9 @@ import { NavLink, useLocation } from "react-router";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils"
-import { useEffect, useState } from "react";
-import routes from "../../routes";
+import { useEffect } from "react";
 import { X } from "lucide-react";
+import routes from "#app/routes";
 
 export default function Sidebar({ open = false, onOpenChange }) {
     const location = useLocation();

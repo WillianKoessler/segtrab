@@ -3,10 +3,10 @@ import { Label } from "#components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "#components/ui/select";
 import { Switch } from "#components/ui/switch";
 import { useState } from "react";
-import { createUser, updateUser } from "../../../../js/api/users";
 import { Button } from "#components/ui/button";
 
-export default function UserFormPage({ user = null, onSaved, availableRoles }) {
+export default function UserFormPage({ user: initialUser = null, item = null, onSubmit, onSaved, availableRoles }) {
+    const user = initialUser ?? item;
     const [name, setName] = useState(user?.name ?? "");
     const [email, setEmail] = useState(user?.email ?? "");
     const [role, setRole] = useState(user?.roles[0] ?? availableRoles[0]);
@@ -28,9 +28,9 @@ export default function UserFormPage({ user = null, onSaved, availableRoles }) {
                 payload.password = password;
                 payload.password_confirmation = passwordConfirmation;
             }
-            const saved = user
-                ? await updateUser(user.id, payload)
-                : await createUser(payload);
+            const saved = onSubmit
+                ? await onSubmit(payload)
+                : null;
 
             onSaved?.(saved);
         } catch (error) {

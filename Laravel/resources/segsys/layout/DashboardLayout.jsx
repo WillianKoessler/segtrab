@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { ScrollArea } from "#components/ui/scroll-area";
 import { Toaster } from "sonner";
-import { useTheme } from "../../../js/contexts/theme-context";
+import { useTheme } from "#contexts/theme-context";
 
 export function DashboardLayout() {
     const { resolvedTheme } = useTheme();
