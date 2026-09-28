@@ -1,7 +1,5 @@
 <?php
 
-use App\Infrastructure\Integrations\Test\TestIntegration;
-
 return [
 
     /*
@@ -40,12 +38,29 @@ return [
     */
 
     'drivers' => [
-        'test' => TestIntegration::class,
-        // 'asaas' => App\Infrastructure\Integrations\Asaas\AsaasIntegration::class,
+        'test' => App\Infrastructure\Integrations\Test\TestIntegration::class,
+        'asaas' => App\Infrastructure\Integrations\Asaas\AsaasIntegration::class,
         // 'conta_azul' => App\Infrastructure\Integrations\ContaAzul\ContaAzulIntegration::class,
         // 'eso' => App\Infrastructure\Integrations\ESO\ESOIntegration::class,
         // 'soc' => App\Infrastructure\Integrations\SOC\SocIntegration::class,
         // 'ho_facil' => App\Infrastructure\Integrations\HOFACIL\HoFacilIntegration::class,
         // 'asana' => App\Infrastructure\Integrations\Asana\AsanaIntegration::class,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Provider configuration
+    |--------------------------------------------------------------------------
+    */
+
+    'providers' => [
+        'asaas' => [
+            'sandbox_url' => 'https://api-sandbox.asaas.com/v3',
+            'production_url' => 'https://api.asaas.com/v3',
+            'user_agent' => env('ASAAS_USER_AGENT', 'Segtrab/1.0 (Laravel; PHP)'),
+            'timeout' => (int) env('ASAAS_TIMEOUT', 15),
+            'connect_timeout' => (int) env('ASAAS_CONNECT_TIMEOUT', 5),
+        ],
+    ],
+
 ];
