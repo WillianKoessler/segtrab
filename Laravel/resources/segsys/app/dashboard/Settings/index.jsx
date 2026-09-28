@@ -1,4 +1,4 @@
-import { Bell, Building2, Shield, User } from "lucide-react";
+import { Bell, Building2, Landmark, Shield, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Company } from "./company";
 import { Notification } from "./notification";
 import { Security } from "./security";
+import { Integrations } from "./integrations";
 
 export default function SettingsPage() {
 
@@ -52,6 +53,10 @@ export default function SettingsPage() {
                         <Shield className="h-4 w-4" />
                         Segurança
                     </TabsTrigger>
+                    <TabsTrigger value="integrations" className="gap-2">
+                        <Landmark className="h-4 w-4" />
+                        Integrações
+                    </TabsTrigger>
                 </TabsList>
 
 
@@ -65,6 +70,10 @@ export default function SettingsPage() {
 
                 <TabsContent value="security" className="m-1 space-y-6">
                     <Security />
+                </TabsContent>
+
+                <TabsContent value="integrations" className="m-1 space-y-6">
+                    <Integrations />
                 </TabsContent>
             </Tabs>
         </section>

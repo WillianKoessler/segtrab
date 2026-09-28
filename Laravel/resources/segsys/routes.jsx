@@ -1,12 +1,13 @@
 import ModulePlaceholderPage from "./app/shared/ModulePlaceholderPage";
 import DashboardHome from "./app/dashboard/Home/index";
 import SettingsPage from './app/dashboard/Settings';
-import { LayoutDashboard, Users, Package, ShoppingCart, BarChart3, Settings, File, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Users, Package, ShoppingCart, BarChart3, Settings, File, ShieldCheck, Landmark } from "lucide-react";
 import { ProfilePage } from "./app/dashboard/Profile";
 import UserPage from "./app/users/UserPage";
 import AccessControlPage from "./app/access-control/AccessControlPage";
 import AEPPage from "./app/dashboard/AEP";
 import { TesterPage } from "./app/dashboard/Tester";
+import AsaasTestPage from "./app/dashboard/AsaasTest";
 import ClientsPage from "./app/dashboard/Clientes";
 
 
@@ -99,6 +100,14 @@ const routes = [
         title: "Tester",
         extra: {
             icon: Settings,
+        },
+    },
+    {
+        path: "asaas-tester",
+        Component: AsaasTestPage,
+        title: "Teste Asaas",
+        extra: {
+            icon: Landmark,
         },
     },
 ];
