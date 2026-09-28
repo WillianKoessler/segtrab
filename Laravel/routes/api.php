@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccessControlController;
 use App\Http\Controllers\Auth\TokenAuthenticationController;
+use App\Http\Controllers\AsaasIntegrationController;
 use App\Http\Controllers\IntegrationTestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
@@ -42,6 +43,10 @@ Route::middleware('api-json')->group(function () {
         Route::put('/permissions/{permission}', [AccessControlController::class, 'updatePermission']);
         Route::delete('/permissions/{permission}', [AccessControlController::class, 'destroyPermission']);
 
-        Route::get('/integrations/test', [ IntegrationTestController::class, 'show' ]);
+        Route::get('/integrations/test', [IntegrationTestController::class, 'show']);
+
+        Route::get('/integrations/asaas', [AsaasIntegrationController::class, 'show']);
+        Route::put('/integrations/asaas', [AsaasIntegrationController::class, 'update']);
+        Route::get('/integrations/finance/balance', [AsaasIntegrationController::class, 'balance']);
     });
 });
